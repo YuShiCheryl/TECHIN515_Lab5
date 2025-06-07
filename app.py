@@ -1,75 +1,38 @@
-import os
 from flask import Flask, request, jsonify
-import torch
-import torchvision.transforms as transforms
-from PIL import Image
-from model import GestureCNN
-from utils import extract_frames
-
-
-UPLOAD_FOLDER = 'uploads'
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+from tensorflow.keras.models import load_model
+import numpy as np
 
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-# Load the trained model
-model = GestureCNN(num_classes=4)
-model.load_state_dict(torch.load('gesture_model.pth', map_location=torch.device('cpu')))
-model.eval()
+# Load model once at startup
+model = load_model("wand_model.h5")
+gesture_labels = ["V", "O", "Z", "S"]  # Update this to match your implementation
 
-# Define transformation for input frames
-transform = transforms.Compose([
-    transforms.Resize((64, 64)),
-    transforms.ToTensor()
-])
+@app.route("/", methods=["GET"])
+def home():
+    return "Wand Gesture API is running!"
 
-gesture_labels = ['swipe left', 'swipe right', 'swipe up', 'swipe down']
-
-@app.route('/upload', methods=['POST'])
-def upload_video():
-    if 'file' not in request.files:
-        return jsonify({'error': 'No file part in request'}), 400
-    file = request.files['file']
-    if file.filename == '':
-        return jsonify({'error': 'No file selected'}), 400
-    filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
-    file.save(filepath)
-    print(f"[INFO] Uploaded video saved to: {filepath}")
-    return jsonify({'message': 'Video uploaded successfully', 'filename': file.filename}), 200
-
-@app.route('/predict', methods=['GET'])
+@app.route("/predict", methods=["POST"])
 def predict():
-    files = os.listdir(app.config['UPLOAD_FOLDER'])
-    if not files:
-        return jsonify({'error': 'No video found. Please upload first.'}), 400
-    video_path = os.path.join(app.config['UPLOAD_FOLDER'], files[-1])  # Use the most recent upload
-    print(f"[INFO] Running inference on: {video_path}")
+    try:
+        data = request.json.get("data")
+        if not data:
+            raise ValueError("Missing 'data' field")
 
-    frames = extract_frames(video_path)
-    if not frames:
-        return jsonify({'error': 'No frames extracted'}), 500
+        input_array = np.array(data).reshape(1, -1)  # Reshape for model input
+        prediction = model.predict(input_array)
 
-    predictions = []
-    for frame in frames:
-        image = transform(frame).unsqueeze(0)  # Add batch dimension
-        with torch.no_grad():
-            outputs = model(image)
-            _, predicted = torch.max(outputs, 1)
-            predictions.append(predicted.item())
+        top_index = int(np.argmax(prediction))
+        label = gesture_labels[top_index]
+        confidence = float(prediction[0][top_index]) * 100
 
-    # Majority vote
-    final_pred = max(set(predictions), key=predictions.count)
-    gesture = gesture_labels[final_pred]
+        return jsonify({
+            "gesture": label,
+            "confidence": confidence
+        })
 
-    return jsonify({'gesture': gesture}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
 
-if __name__ == '__main__':
-    import argparse
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--host', default='127.0.0.1', help='Host to run server on (use 0.0.0.0 for public)')
-    parser.add_argument('--port', default=5000, type=int, help='Port to run server on')
-    args = parser.parse_args()
-
-    print(f"[INFO] Starting Flask server at http://{args.host}:{args.port}")
-    app.run(host=args.host, port=args.port)
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8000)
