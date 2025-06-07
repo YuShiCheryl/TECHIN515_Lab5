@@ -96,7 +96,7 @@ python3 app.py --host 0.0.0.0 --port 5000
 
 ---
 
-## 🌐 Cloud Inference (from your laptop)
+## Cloud Inference (from your laptop)
 
 Run these commands **on your local machine**, replacing `YOUR_AZURE_IP` with your Azure VM’s IP address:
 
@@ -104,18 +104,6 @@ Run these commands **on your local machine**, replacing `YOUR_AZURE_IP` with you
 python client/upload_client.py --file video_samples/sample1.mp4 --server http://YOUR_AZURE_IP:5000
 python client/predict_client.py --server http://YOUR_AZURE_IP:5000
 ```
-
----
-
-## Screenshots
-
-### Edge Inference
-
-![Edge Inference](screenshots/edge_inference.png)
-
-### ☁️ Cloud Inference (Azure VM)
-
-![Cloud Inference](screenshots/cloud_inference.png)
 
 ---
 
