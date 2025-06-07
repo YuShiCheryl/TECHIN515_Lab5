@@ -5,7 +5,7 @@ This lab demonstrates an edge-cloud offloading system for gesture inference. A l
 
 ---
 
-## 🎯 Project Goal
+## Project Goal
 
 - Deploy a gesture recognition model using Flask.
 - Run inference:
@@ -15,7 +15,7 @@ This lab demonstrates an edge-cloud offloading system for gesture inference. A l
 
 ---
 
-## 🗂️ Project Structure
+## Project Structure
 
 ```
 lab5/
@@ -31,7 +31,7 @@ lab5/
 
 ---
 
-## 🖥️ Local (Edge) Setup
+## Local (Edge) Setup
 
 ### 1. Clone the repository
 
@@ -63,7 +63,7 @@ python client/predict_client.py --server http://localhost:5000
 
 ---
 
-## ☁️ Cloud (Azure VM) Setup
+## Cloud (Azure VM) Setup
 
 ### 1. Create Azure VM (Ubuntu 20.04 or later)
 
@@ -107,9 +107,9 @@ python client/predict_client.py --server http://YOUR_AZURE_IP:5000
 
 ---
 
-## 📸 Screenshots
+## Screenshots
 
-### 🖥️ Edge Inference
+### Edge Inference
 
 ![Edge Inference](screenshots/edge_inference.png)
 
@@ -128,7 +128,7 @@ python client/predict_client.py --server http://YOUR_AZURE_IP:5000
 
 ---
 
-## 👤 Author Information
+## Author Information
 
 - **Name:** Your Name  
 - **UW NetID:** yournetid  
@@ -136,7 +136,7 @@ python client/predict_client.py --server http://YOUR_AZURE_IP:5000
 
 ---
 
-## 📌 Notes
+## Notes
 
 - Sample gesture videos are provided in `video_samples/`
 - The CNN is trained to recognize simple gestures (e.g., up/down)
