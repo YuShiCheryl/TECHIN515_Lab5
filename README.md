@@ -106,6 +106,11 @@ python client/predict_client.py --server http://YOUR_AZURE_IP:5000
 ```
 
 ---
+## screenshot
+
+https://drive.google.com/file/d/1iHLkNJ3LOhj6xGnlPni6wPp7GeJQyxDH/view?usp=drive_link
+
+---
 
 ## ✅ Deliverables
 
