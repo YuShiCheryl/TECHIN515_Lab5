@@ -1,5 +1,6 @@
 import torch.nn as nn
 
+
 class GestureCNN(nn.Module):
     def __init__(self, num_classes=4):
         super(GestureCNN, self).__init__()
