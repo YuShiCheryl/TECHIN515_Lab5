@@ -6,6 +6,7 @@ from PIL import Image
 from model import GestureCNN
 from utils import extract_frames
 
+
 UPLOAD_FOLDER = 'uploads'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
